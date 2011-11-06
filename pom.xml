@@ -4,7 +4,7 @@
     <groupId>dk.i2m.jsf</groupId>
     <artifactId>i2m-jsf</artifactId>
     <packaging>jar</packaging>
-    <version>1.3</version>
+    <version>1.3-SNAPSHOT</version>
     <name>i2m-jsf</name>
     <description>Extensions and utilities for JavaServer Faces 1.2. Contains a utility library along with some custom converters and components</description>
     <url>http://www.i2m.dk/p/i2m-jsf</url>
@@ -35,9 +35,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://git@github.com/allanlykkechristensen/i2m-jsf.git</connection>
-        <url>scm:git:git://git@github.com/allanlykkechristensen/i2m-jsf.git</url>
-        <developerConnection>scm:git:git://git@github.com/allanlykkechristensen/i2m-jsf.git</developerConnection>
+        <connection>scm:git:git://github.com/allanlykkechristensen/i2m-jsf.git</connection>
+        <url>scm:git:git://github.com/allanlykkechristensen/i2m-jsf.git</url>
+        <developerConnection>scm:git:git://github.com/allanlykkechristensen/i2m-jsf.git</developerConnection>
     </scm>
 
     <distributionManagement>
