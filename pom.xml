@@ -35,15 +35,9 @@
     </developers>
 
     <scm>
-        <connection>scm:hg:https://hg.i2m.dk/i2m-jsf/</connection>
-        <developerConnection>scm:hg:https://hg.i2m.dk/i2m-jsf/</developerConnection>
-        <url>https://hg.i2m.dk/i2m-jsf/</url>
-        
-        <scm>
-            <connection>scm:git:git://github.com/allanlykkechristensen/i2m-jsf.git</connection>
-            <url>scm:git:git://github.com/allanlykkechristensen/i2m-jsf.git</url>
-            <developerConnection>scm:git:git://github.com/allanlykkechristensen/i2m-jsf.git</developerConnection>
-        </scm>
+        <connection>scm:git:git://github.com/allanlykkechristensen/i2m-jsf.git</connection>
+        <url>scm:git:git://github.com/allanlykkechristensen/i2m-jsf.git</url>
+        <developerConnection>scm:git:git://github.com/allanlykkechristensen/i2m-jsf.git</developerConnection>
     </scm>
 
     <distributionManagement>
