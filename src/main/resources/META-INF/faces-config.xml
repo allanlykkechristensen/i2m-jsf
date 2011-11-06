@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+    <converter>
+        <description>Enumeration type converter</description>
+        <converter-id>i2m.enumTypeConverter</converter-id>
+        <converter-class>dk.i2m.jsf.converters.EnumTypeConverter</converter-class>
+    </converter>
+
+    <converter>
+        <description>Locale converter</description>
+        <converter-id>i2m.localeConverter</converter-id>
+        <converter-class>dk.i2m.jsf.converters.LocaleConverter</converter-class>
+    </converter>
+
+    <converter>
+        <description>System / HTML line break converter</description>
+        <converter-id>i2m.stringLineBreakConverter</converter-id>
+        <converter-class>dk.i2m.jsf.converters.StringLineBreakConverter</converter-class>
+    </converter>
+
+    <converter>
+        <description>String abbreviation converter</description>
+        <converter-id>i2m.abbreviationDisplay</converter-id>
+        <converter-class>dk.i2m.jsf.converters.AbbreviationDisplayConverter</converter-class>
+    </converter>
+
+    <component>
+        <component-type>dk.i2m.jsf.components.alertmessage</component-type>
+        <component-class>dk.i2m.jsf.components.alertmessage.AlertMessage</component-class>
+    </component>
+
+    <component>
+        <component-type>dk.i2m.jsf.components.textdifference.TextDifference</component-type>
+        <component-class>dk.i2m.jsf.components.textdifference.TextDifference</component-class>
+        <property>
+            <property-name>oldText</property-name>
+            <property-class>String</property-class>
+            <default-value></default-value>
+        </property>
+        <property>
+            <property-name>newText</property-name>
+            <property-class>String</property-class>
+            <default-value></default-value>
+        </property>
+        <property>
+            <property-name>styleInserted</property-name>
+            <property-class>String</property-class>
+            <default-value>TextDiffferenceStyleInserted</default-value>
+        </property>
+        <property>
+            <property-name>styleDeleted</property-name>
+            <property-class>String</property-class>
+            <default-value>TextDiffferenceStyleDeleted</default-value>
+        </property>
+        <property>
+            <property-name>styleEqual</property-name>
+            <property-class>String</property-class>
+            <default-value>TextDiffferenceStyleEqual</default-value>
+        </property>
+        <property>
+            <property-name>styleClass</property-name>
+            <property-class>String</property-class>
+            <default-value>TextDiffferenceStyle</default-value>
+        </property>
+    </component>
+
+    <render-kit>
+        <renderer>
+            <description>Renderer for the alert message component.</description>
+            <component-family>javax.faces.Message</component-family>
+            <renderer-type>dk.i2m.jsf.components.alertmessage.AlertMessageRenderer</renderer-type>
+            <renderer-class>dk.i2m.jsf.components.alertmessage.AlertMessageRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+
+    <render-kit>
+        <renderer>
+            <component-family>dk.i2m.jsf.components.textdifference.TextDifference</component-family>
+            <renderer-type>dk.i2m.jsf.components.textdifference.TextDifferenceRenderer</renderer-type>
+            <renderer-class>dk.i2m.jsf.components.textdifference.TextDifferenceRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+
+</faces-config>
