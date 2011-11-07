@@ -35,9 +35,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://git@github.com/allanlykkechristensen/i2m-jsf.git</connection>
-        <url>scm:git:git://git@github.com/allanlykkechristensen/i2m-jsf.git</url>
-        <developerConnection>scm:git:git://git@github.com/allanlykkechristensen/i2m-jsf.git</developerConnection>
+        <connection>scm:git:git://github.com:allanlykkechristensen/i2m-jsf.git</connection>
+        <url>scm:git:git://github.com:allanlykkechristensen/i2m-jsf.git</url>
+        <developerConnection>scm:git:git://github.com:allanlykkechristensen/i2m-jsf.git</developerConnection>
     </scm>
 
     <distributionManagement>
