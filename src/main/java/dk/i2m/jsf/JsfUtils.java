@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 - 2011 Interactive Media Management
+ * Copyright (C) 2008 - 2012 Interactive Media Management
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,7 @@
 package dk.i2m.jsf;
 
 import java.text.MessageFormat;
-import java.util.Locale;
 import java.util.Map;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
@@ -34,14 +32,14 @@ import javax.servlet.http.HttpSession;
 /**
  * JavaServer Faces utility class.
  *
- * @author <a href="mailto:allan@interactivemediamanagement.com">Allan Lykke Christensen</a>
+ * @author <a href="mailto:allan@i2m.dk">Allan Lykke Christensen</a>
  */
 public class JsfUtils {
 
     /**
      * Gets the {@link HttpServletResponse} from a given {@link FacesContext}.
-     *
-     * @param ctx
+     * 
+     * @param ctx 
      *          {@link FacesContext} from which to obtain the
      *          {@link HttpServletResponse}
      * @return {@link HttpServletResponse} from a given {@link FacesContext}
@@ -51,47 +49,16 @@ public class JsfUtils {
     }
 
     /**
-     * Gets the {@link ResourceBundle} of the current JSF context.
-     *
-     * @return {@link ResourceBundle} of the current context
-     */
-    public static ResourceBundle getResourceBundle() {
-        return getResourceBundle(FacesContext.getCurrentInstance());
-    }
-
-    /**
-     * Gets the message bundle from a given JSF context.
-     *
-     * @param ctx
-     *            {@link FacesContext} of the current application
-     * @return {@link ResourceBundle} containing the message bundle of the 
-     *         current application
-     */
-    public static ResourceBundle getResourceBundle(FacesContext ctx) {
-        // Get the current JSF application
-        Application application = ctx.getApplication();
-
-        // Get the name of the message bundle used.
-        String messageBundleName = application.getMessageBundle();
-
-        // Get the locale of the current view
-        Locale locale = ctx.getViewRoot().getLocale();
-
-        // Load the resource bundle
-        return ResourceBundle.getBundle(messageBundleName, locale);
-    }
-
-    /**
      * Gets the {@link ResourceBundle} from a given JSF context.
-     *
-     * @param ctx
-     *          {@link FacesContext} of the current application
-     * @param bundleId
+     * 
+     * @param bundleId 
      *          Unique identifier of the bundle to fetch
      * @return {@link ResourceBundle} of the current application
+     * @since 1.4
      */
-    public static ResourceBundle getResourceBundle(FacesContext ctx, String bundleId) {
+    public static ResourceBundle getResourceBundle(String bundleId) {
         // Get the current JSF application
+        FacesContext ctx = FacesContext.getCurrentInstance();
         Application application = ctx.getApplication();
 
         // Get the resource bundle
@@ -99,18 +66,47 @@ public class JsfUtils {
         try {
             bundle = application.getResourceBundle(ctx, bundleId);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            bundle = getResourceBundle(ctx);
+            bundle = ResourceBundle.getBundle(application.getMessageBundle());
         }
 
         return bundle;
     }
 
     /**
+     * Gets a message from a given {@link ResourceBundle} formatted using the
+     * given parameters.
+     * 
+     * @param bundleId 
+     *          Unique identifier of the {@ink ResourceBundle}
+     * @param label    
+     *          Label to fetch from the bundle
+     * @param params   
+     *          Replacement values for the label
+     * @return Formatted message, or the value of {@code label} if it wasn't
+     *         found in the bundle
+     * @since 1.4
+     */
+    public static String getMessage(String bundleId, String label, Object[] params) {
+        ResourceBundle bundle = getResourceBundle(bundleId);
+
+        String msg;
+        if (!bundle.containsKey(label)) {
+            msg = label;
+        } else {
+            msg = bundle.getString(label);
+        }
+
+        msg = MessageFormat.format(msg, params);
+
+        return msg;
+    }
+
+    /**
      * Obtain the {@link Map} of data stored in the current session for the
      * current user.
      *
-     * @param ctx {@link FacesContext} containing the session {@link Map}
+     * @param ctx 
+     *          {@link FacesContext} containing the session {@link Map}
      * @return {@link Map} of the data stored in the current session for the
      *         current user.
      */
@@ -123,7 +119,7 @@ public class JsfUtils {
     /**
      * Obtain the {@link Map} of data stored in the current session for the
      * current user.
-     *
+     * 
      * @return {@link Map} of the data stored in the current session for the
      *         current user.
      */
@@ -133,7 +129,7 @@ public class JsfUtils {
 
     /**
      * Obtain the request parameter map in the external content.
-     *
+     * 
      * @return {@link Map} of requests in the external content
      */
     public static Map<String, String> getRequestParameterMap() {
@@ -145,135 +141,28 @@ public class JsfUtils {
     /**
      * Generates a {@link FacesMessage} from an entry in the
      * {@link ResourceBundle} of the Faces application.
-     *
-     * @param severity
-     *          Severity of the message
-     * @param messageKey
-     *          Key of the message in the {@link ResourceBundle}
-     * @param param
-     *          Parameters to go into the message
-     * @return {@link FacesMessage} initialised with the given information
-     */
-    public static FacesMessage createMessage(FacesMessage.Severity severity,
-            String messageKey, Object param) {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        ResourceBundle bundle = getResourceBundle(ctx);
-        String msgPattern = bundle.getString(messageKey);
-        String msg = msgPattern;
-
-        if (param != null) {
-            Object[] params = {param};
-            msg = MessageFormat.format(msgPattern, params);
-        }
-
-        FacesMessage facesMsg = new FacesMessage();
-        facesMsg.setSeverity(severity);
-        facesMsg.setSummary(msg);
-        facesMsg.setDetail(msg);
-
-        return facesMsg;
-    }
-
-    /**
-     * Generates a {@link FacesMessage} from an entry in the
-     * {@link ResourceBundle} of the Faces application.
-     *
-     * @param severity
-     *          Severity of the message
-     * @param messageKey
-     *          Key of the message in the {@link ResourceBundle}
-     * @param params
-     *          Parameters to go into the message
-     * @return {@link FacesMessage} initialised with the given information
-     */
-    public static FacesMessage createMessage(FacesMessage.Severity severity, String messageKey, Object[] params) {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        ResourceBundle bundle = getResourceBundle(ctx);
-        String msgPattern = "";
-        try {
-            msgPattern = bundle.getString(messageKey);
-        } catch (MissingResourceException ex) {
-            msgPattern = messageKey;
-        }
-        String msg = msgPattern;
-
-        msg = MessageFormat.format(msgPattern, params);
-
-        FacesMessage facesMsg = new FacesMessage();
-        facesMsg.setSeverity(severity);
-        facesMsg.setSummary(msg);
-        facesMsg.setDetail(msg);
-
-        return facesMsg;
-    }
-
-    /**
-     * Generates a {@link FacesMessage} from an entry in the
-     * {@link ResourceBundle} of the Faces application.
-     *
-     * @param severity
-     *          Severity of the message
-     * @param useBundle
-     *          If the resource bundle should be used to look up a message
-     * @param messageKey
-     *          Key of the message in the {@link ResourceBundle}
-     * @param param
-     *          Parameters to go into the message
-     * @return {@link FacesMessage} initialised with the given information
-     */
-    public static FacesMessage createMessage(FacesMessage.Severity severity,
-            boolean useBundle, String messageKey, Object param) {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-
-        String msg = messageKey;
-        if (useBundle) {
-            ResourceBundle bundle = getResourceBundle(ctx);
-            String msgPattern = bundle.getString(messageKey);
-            msg = msgPattern;
-        }
-
-        if (param != null) {
-            Object[] params = {param};
-            msg = MessageFormat.format(msg, params);
-        }
-
-        FacesMessage facesMsg = new FacesMessage();
-        facesMsg.setSeverity(severity);
-        facesMsg.setSummary(msg);
-        facesMsg.setDetail(msg);
-
-        return facesMsg;
-    }
-
-    /**
-     * Generates a {@link FacesMessage} from an entry in the
-     * {@link ResourceBundle} of the Faces application.
-     *
-     * @param severity
+     * 
+     * @param severity   
      *          Severity of the message
      * @param bundleName 
      *          Name of the bundle from where the get the message
-     * @param messageKey
+     * @param messageKey 
      *          Key of the message in the {@link ResourceBundle}
-     * @param param
+     * @param params     
      *          Parameters to go into the message
      * @return {@link FacesMessage} initialised with the given information
      */
     public static FacesMessage createMessage(FacesMessage.Severity severity,
-            String bundleName, String messageKey, Object param) {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-
-        String msg = messageKey;
-
-        ResourceBundle bundle = getResourceBundle(ctx, bundleName);
-        String msgPattern = bundle.getString(messageKey);
-        msg = msgPattern;
-
-
-        if (param != null) {
-            Object[] params = {param};
-            msg = MessageFormat.format(msg, params);
+            String bundleName, String messageKey, Object[] params) {
+        ResourceBundle bundle = getResourceBundle(bundleName);
+        String msgPattern;
+        if (bundle.containsKey(messageKey)) {
+            msgPattern = bundle.getString(messageKey);
+        } else {
+            msgPattern = messageKey;
         }
+
+        String msg = MessageFormat.format(msgPattern, params);
 
         FacesMessage facesMsg = new FacesMessage();
         facesMsg.setSeverity(severity);
@@ -286,114 +175,25 @@ public class JsfUtils {
     /**
      * Generates a {@link FacesMessage} from an entry in the
      * {@link ResourceBundle} of the Faces application.
-     *
-     * @param severity
-     *          Severity of the message
-     * @param messageKey
-     *          Key of the message in the {@link ResourceBundle}
-     * @return {@link FacesMessage} initialised with the given information
-     */
-    public static FacesMessage createMessage(FacesMessage.Severity severity,
-            String messageKey) {
-        return createMessage(severity, messageKey, null);
-    }
-
-    /**
-     * Generates a {@link FacesMessage} from an entry in the
-     * {@link ResourceBundle} of the Faces application.
-     *
-     * @param componentId
+     * 
+     * @param componentId 
      *          ID of the component to attach the message to
-     * @param severity
+     * @param severity    
      *          Severity of the message
-     * @param messageKey
-     *          Key of the message in the {@link ResourceBundle}
-     * @param param
-     *          Parameters to go into the message
-     * @return {@link FacesMessage} initialised with the given information
-     */
-    public static FacesMessage createMessage(String componentId,
-            FacesMessage.Severity severity, String messageKey, Object param) {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        FacesMessage msg = createMessage(severity, messageKey, param);
-
-        ctx.addMessage(componentId, msg);
-
-        return msg;
-    }
-
-    /**
-     * Generates a {@link FacesMessage} from an entry in the
-     * {@link ResourceBundle} of the Faces application.
-     *
-     * @param componentId
-     *          ID of the component to attach the message to
-     * @param severity
-     *          Severity of the message
-     * @param messageKey
-     *          Key of the message in the {@link ResourceBundle}
-     * @param params
-     *          Parameters to go into the message
-     * @return {@link FacesMessage} initialised with the given information
-     */
-    public static FacesMessage createMessage(String componentId,
-            FacesMessage.Severity severity, String messageKey, Object[] params) {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        FacesMessage msg = createMessage(severity, messageKey, params);
-
-        ctx.addMessage(componentId, msg);
-
-        return msg;
-    }
-
-    /**
-     * Generates a {@link FacesMessage} from an entry in the
-     * {@link ResourceBundle} of the Faces application.
-     *
-     * @param componentId
-     *          ID of the component to attach the message to
-     * @param severity
-     *          Severity of the message
-     * @param useBundle
-     *          If the resource bundle should be used to look up messages
-     * @param messageKey
-     *          Key of the message in the {@link ResourceBundle}
-     * @param param
-     *          Parameters to go into the message
-     * @return {@link FacesMessage} initialised with the given information
-     */
-    public static FacesMessage createMessage(String componentId,
-            FacesMessage.Severity severity, boolean useBundle, String messageKey,
-            Object param) {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        FacesMessage msg = createMessage(severity, useBundle, messageKey, param);
-
-        ctx.addMessage(componentId, msg);
-
-        return msg;
-    }
-
-    /**
-     * Generates a {@link FacesMessage} from an entry in the
-     * {@link ResourceBundle} of the Faces application.
-     *
-     * @param componentId
-     *          ID of the component to attach the message to
-     * @param severity
-     *          Severity of the message
-     * @param bundleName
+     * @param bundleName 
      *          Name of the resource bundle containing the message
-     * @param messageKey
+     * @param messageKey  
      *          Key of the message in the {@link ResourceBundle}
-     * @param param
+     * @param params      
      *          Parameters to go into the message
      * @return {@link FacesMessage} initialised with the given information
+     * @since 1.4
      */
     public static FacesMessage createMessage(String componentId,
             FacesMessage.Severity severity, String bundleName, String messageKey,
-            Object param) {
+            Object[] params) {
         FacesContext ctx = FacesContext.getCurrentInstance();
-        FacesMessage msg = createMessage(severity, bundleName, messageKey, param);
+        FacesMessage msg = createMessage(severity, bundleName, messageKey, params);
 
         ctx.addMessage(componentId, msg);
 
@@ -404,17 +204,21 @@ public class JsfUtils {
      * Generates a {@link FacesMessage} from an entry in the
      * {@link ResourceBundle} of the Faces application.
      *
-     * @param componentId
+     * @param componentId 
      *          ID of the component to attach the message to
-     * @param severity
+     * @param severity    
      *          Severity of the message
-     * @param messageKey
+     * @param bundleName  
+     *          Name of the resource bundle containing the message
+     * @param messageKey  
      *          Key of the message in the {@link ResourceBundle}
      * @return {@link FacesMessage} initialised with the given information
+     * @since 1.4
      */
-    public static FacesMessage createMessage(String componentId, FacesMessage.Severity severity, String messageKey) {
+    public static FacesMessage createMessage(String componentId,
+            FacesMessage.Severity severity, String bundleName, String messageKey) {
         FacesContext ctx = FacesContext.getCurrentInstance();
-        FacesMessage msg = createMessage(severity, messageKey);
+        FacesMessage msg = createMessage(severity, bundleName, messageKey, new Object[]{});
 
         ctx.addMessage(componentId, msg);
 
@@ -424,9 +228,9 @@ public class JsfUtils {
     /**
      * Gets a {@link ValueExpression} from the current {@link FacesContext}.
      *
-     * @param name
+     * @param name 
      *          Name of the {@link ValueExpression} to obtain
-     * @return {@link ValueExpression} matching the <code>name</code>
+     * @return {@link ValueExpression} matching the {@code name}
      */
     public static ValueExpression getValueExpression(String name) {
         FacesContext ctx = FacesContext.getCurrentInstance();
@@ -439,7 +243,7 @@ public class JsfUtils {
     /**
      * Gets the value of a {@link ValueExpression}.
      *
-     * @param name
+     * @param name 
      *          Name of the {@link ValueExpression}
      * @return Value of the {@link ValueExpression}.
      */
@@ -467,9 +271,9 @@ public class JsfUtils {
     /**
      * Sets a {@link String} value of a {@link ValueExpression}.
      *
-     * @param valueExpression
+     * @param valueExpression 
      *          Value expression
-     * @param value
+     * @param value 
      *          {@link String} value to set in the value expression
      */
     public static void setValue(final String valueExpression, final String value) {
