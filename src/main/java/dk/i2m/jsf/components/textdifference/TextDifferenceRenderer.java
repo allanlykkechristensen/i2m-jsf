@@ -48,6 +48,7 @@ public class TextDifferenceRenderer extends Renderer {
 
         diff_match_patch diff = new diff_match_patch();
         LinkedList<Diff> differences = diff.diff_main(stripHtml(oldText), stripHtml(newText));
+        diff.diff_cleanupSemantic(differences);
         String output = prettyHtml(differences, styleInserted, styleDeleted, styleEqual);
 
         writer.startElement("div", component);
