@@ -26,6 +26,8 @@ import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -226,6 +228,29 @@ public class JsfUtils {
     }
 
     /**
+     * Generates a {@link FacesMessage} from an entry in the
+     * {@link ResourceBundle} of the Faces application.
+     *
+     * @param componentId 
+     *          ID of the component to attach the message to
+     * @param severity    
+     *          Severity of the message
+     * @param message
+     *          Message to display
+     * @return {@link FacesMessage} initialised with the given information
+     * @since 1.6
+     */
+    public static FacesMessage createMessage(String componentId,
+            FacesMessage.Severity severity, String message) {
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        FacesMessage msg = new FacesMessage(severity, message, message);
+
+        ctx.addMessage(componentId, msg);
+
+        return msg;
+    }
+
+    /**
      * Gets a {@link ValueExpression} from the current {@link FacesContext}.
      *
      * @param name 
@@ -279,5 +304,105 @@ public class JsfUtils {
     public static void setValue(final String valueExpression, final String value) {
         ValueExpression ve = getValueExpression(valueExpression);
         ve.setValue(FacesContext.getCurrentInstance().getELContext(), value);
+    }
+
+    /**
+     * Gets the value of a {@link Cookie} with the given {@code name} from the 
+     * given {@code request}.
+     * 
+     * @param request
+     *          Request from where to extract the {@link Cookie} value
+     * @param name
+     *          Name of the {@link Cookie}
+     * @return Value of the {@link Cookie} with the given {@code name} or 
+     *         {@code null} if it doesn't exist in the given {@code request}
+     * @throws CookieNotFoundException
+     *          If the requested {@link Cookie} was not found in the request
+     */
+    public static String getCookieValue(HttpServletRequest request, String name) throws CookieNotFoundException {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (name.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        throw new CookieNotFoundException(name + " not found in HttpServletRequest");
+    }
+
+    /**
+     * Gets the value of a {@link Cookie} with the given {@code name} from the 
+     * current request.
+     * 
+     * @param name
+     *          Name of the {@link Cookie}
+     * @return Value of the {@link Cookie} with the given {@code name} or 
+     *         {@code null} if it doesn't exist in the current request
+     */
+    public static String getCookieValue(String name) throws CookieNotFoundException {
+        HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        return getCookieValue(req, name);
+    }
+
+    /**
+     * Adds a {@link Cookie} with a given {@code name} and {@code value} through
+     * the current response.
+     * 
+     * @param name 
+     *          Name of the {@link Cookie} to add
+     * @param value
+     *          Value to store in the {@link Cookie}
+     * @param maxAge
+     *          Life time (in seconds) of cookie
+     */
+    public static void addCookie(String name, String value, int maxAge) {
+        HttpServletResponse resp = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        addCookie(resp, name, value, maxAge);
+    }
+
+    /**
+     * Adds a {@link Cookie} with a given {@code name} and {@code value} through
+     * the given {@code response}.
+     * 
+     * @param response
+     *          Response from where to remove the {@link Cookie}
+     * @param name 
+     *          Name of the {@link Cookie} to add
+     * @param value
+     *          Value to store in the {@link Cookie}
+     * @param maxAge
+     *          Life time (in seconds) of cookie
+     */
+    public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setMaxAge(maxAge);
+        response.addCookie(cookie);
+    }
+
+    /**
+     * Remove a {@link Cookie} with a given {@code name} through the given 
+     * {@code response}.
+     * 
+     * @param response
+     *          Response from where to remove the {@link Cookie}
+     * @param name 
+     *          Name of the {@link Cookie} to remove
+     */
+    public static void removeCookie(HttpServletResponse response, String name) {
+        addCookie(response, name, null, 0);
+    }
+
+    /**
+     * Remove a {@link Cookie} with a given {@code name} through the current 
+     * {@code response}.
+     * 
+     * @param name 
+     *          Name of the {@link Cookie} to remove
+     */
+    public static void removeCookie(String name) {
+        HttpServletResponse resp = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        removeCookie(resp, name);
     }
 }
