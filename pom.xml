@@ -4,7 +4,7 @@
     <groupId>dk.i2m.jsf</groupId>
     <artifactId>i2m-jsf</artifactId>
     <packaging>jar</packaging>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.6-SNAPSHOT</version>
     <name>i2m-jsf</name>
     <description>Extensions and utilities for JavaServer Faces 1.2. Contains a utility library along with some custom converters and components</description>
     <url>http://www.i2m.dk/p/i2m-jsf</url>
